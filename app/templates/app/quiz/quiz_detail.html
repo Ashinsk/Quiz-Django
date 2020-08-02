@@ -1,0 +1,22 @@
+{% extends 'app/base.html' %}
+
+{% block header %}
+<div>Quiz Detail</div>
+{% endblock header%}
+
+{% block content %}
+<div>
+    {{ object.title }}<br/>
+    <a href="{% url 'app:QuestionCreate' quiz_id=object.pk %}">Add Question</a><br>
+    {% for question in object.questions.all %}
+    {{ question.question }} <a href="{% url 'app:QuestionUpdate' quiz_id=object.pk question_id=question.pk%}">Edit</a>
+    <a href="{% url 'app:question_delete' quiz_id=object.pk question_id=question.pk%}">Delete</a>
+    <br/>
+
+    {% for choice in question.question_choices.all %}
+    {{ choice.choice }} {{ choice.is_correct }} <br/>
+    {% endfor %}
+    {% endfor %}
+
+</div>
+{% endblock content %}

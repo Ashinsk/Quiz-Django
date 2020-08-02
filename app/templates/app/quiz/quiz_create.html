@@ -1,0 +1,17 @@
+{% extends 'app/base.html' %}
+
+{% block header %}
+<div>Quiz Create</div>
+{% endblock header%}
+
+{% block content %}
+<div>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.choice1.as_p }}
+        {{ form.choice1.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,23 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block header %}
+<div>Quiz</div>
+{% endblock header%}
+
+{% block content %}
+<div>
+    <a href="{% url 'app:Index' %}">Home</a>
+    <a href="{% url 'app:QuizCreate' %}">Create Quiz</a>
+    <a href="{% url 'app:QuizList' %}">Test Quiz</a>
+</div>
+
+<div>
+    {% for quiz in quizzes %}
+    <a href="{% url 'app:QuizDetail' quiz_id=quiz.id %}">{{ forloop.counter }} {{ quiz.title}}</a>
+    <a href="{% url 'app:QuizUpdate' quiz_id=quiz.id %}">Edit</a>
+    <a href="{% url 'app:quiz_delete' quiz_id=quiz.id %}">Delete</a>
+    <br/>
+    {% endfor %}
+</div>
+{% endblock content %}

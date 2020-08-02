@@ -1,0 +1,17 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block header %}
+<div>Quiz</div>
+{% endblock header%}
+
+{% block content %}
+<div>
+    {% for quiz in quizzes %}
+    <a href="{% url 'app:QuizDetail' quiz_id=quiz.id %}">{{ forloop.counter }} {{ quiz.title}}</a>
+    <a href="{% url 'app:QuizTest' quiz_id=quiz.id %}">Take Test</a>
+    <a href="{% url 'app:quiz_delete' quiz_id=quiz.id %}">Delete</a>
+    <br/>
+    {% endfor %}
+</div>
+{% endblock content %}
