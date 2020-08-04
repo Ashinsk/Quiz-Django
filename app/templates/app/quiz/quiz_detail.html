@@ -1,22 +1,46 @@
 {% extends 'app/base.html' %}
+{% load widget_tweaks %}
 
 {% block header %}
-<div>Quiz Detail</div>
+<div>
+    <h1>{{ quiz.title }}</h1>
+    {% if request.user.is_authenticated and request.user == quiz.author %}
+    <div>
+        <a href="{% url 'app:QuestionCreate' quiz_id=quiz.pk %}" class="btn btn-primary btn-sm">Add Question</a>
+        <a href="{% url 'app:QuizUpdate' quiz_id=quiz.id %}" class="btn btn-primary btn-sm">Edit</a>
+        <a href="{% url 'app:quiz_delete' quiz_id=quiz.id %}" class="btn btn-danger btn-sm">Delete</a>
+    </div>
+    {% endif %}
+</div>
 {% endblock header%}
 
 {% block content %}
 <div>
-    {{ object.title }}<br/>
-    <a href="{% url 'app:QuestionCreate' quiz_id=object.pk %}">Add Question</a><br>
     {% for question in object.questions.all %}
-    {{ question.question }} <a href="{% url 'app:QuestionUpdate' quiz_id=object.pk question_id=question.pk%}">Edit</a>
-    <a href="{% url 'app:question_delete' quiz_id=object.pk question_id=question.pk%}">Delete</a>
-    <br/>
+    <div class="card question-card-div">
+        <div class="card-body">
+            <div class="card-title question-card-title-div">
+                <h5 class="question">{{ question.question }}</h5>
+                {% if request.user.is_authenticated and request.user == quiz.author %}
+                <div>
+                    <a href="{% url 'app:QuestionUpdate' quiz_id=quiz.pk question_id=question.pk%}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{% url 'app:question_delete' quiz_id=quiz.pk question_id=question.pk%}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+                {% endif %}
+            </div>
 
-    {% for choice in question.question_choices.all %}
-    {{ choice.choice }} {{ choice.is_correct }} <br/>
-    {% endfor %}
-    {% endfor %}
+            {% for choice in question.question_choices.all %}
+            <p class="card-text">
+                {% if choice.is_correct %}
+                <span class="is_correct">{{ forloop.counter }}) {{ choice.choice }}</span>
+                {% else %}
+                {{ forloop.counter }}) {{ choice.choice }}
+                {% endif %}
+            </p>
+            {% endfor %}
 
+        </div>
+    </div>
+    {% endfor %}
 </div>
 {% endblock content %}

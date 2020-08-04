@@ -1,19 +1,22 @@
 {% extends 'app/base.html' %}
 {% load crispy_forms_tags %}
 
+
 {% block header %}
-<div>
-    <h1>Quiz</h1>
-</div>
+<h1>User Detail</h1>
 {% endblock header%}
 
 {% block content %}
-<h2>Create a new Quiz</h2>
+<div class="alert alert-info" role="alert">
+    Please enter detail to receive results.
+</div>
 
-<div class="create-quiz-div">
-    <form method="POST">
+<div>
+    <form method="POST" id="test_form">
         {% csrf_token %}
+
         {{ form|crispy }}
+
         <input type="submit" value="Submit" class="btn btn-primary btn-sm submit-btn">
     </form>
 </div>

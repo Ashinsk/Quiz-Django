@@ -3,26 +3,24 @@
 {% load static %}
 
 {% block header %}
-<h1>Quiz</h1>
+<h1>Quiz Results</h1>
 {% endblock header%}
 
 {% block content %}
 <div>
     <div class="quizzes-card-div">
-        {% for quiz in quizzes %}
+        {% for result in results %}
         <div class="card quiz-card" style="width: 18rem;">
             <div class="card-body">
-                <h5 class="card-title">{{ quiz.title}}</a></h5>
-                <!--<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>-->
+                <h5 class="card-title">{{ result.quiz.title}}</a></h5>
                 <p class="card-text">
-                    Questions : {{ quiz.questions.count }}
+                    Total Score : {{ result.quiz.questions.count }}<br>
+                    Score : {{ result.score }}
                 </p>
-                <a href="{% url 'app:QuizTest' quiz_id=quiz.id %}" class="btn btn-primary btn-sm">Take Test</a>
             </div>
             <div class="card-footer text-muted">
-                <small>{{ quiz.modified|naturaltime }}</small>
+                <small>{{ result.created|naturaltime }}</small>
             </div>
-
         </div>
         <br/>
         {% empty %}

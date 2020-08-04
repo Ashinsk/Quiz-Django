@@ -7,11 +7,16 @@ verify_ssl = true
 
 [packages]
 django = "*"
+libsass = "*"
+django-compressor = "*"
+django-sass-processor = "*"
+django-crispy-forms = "*"
+django-widget-tweaks = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 server = "python manage.py runserver"
-migrate = "python manage.py migrate"
-makemigrations = "python manage.py makemigrations"
+shell_plus = "python manage.py shell_plus"

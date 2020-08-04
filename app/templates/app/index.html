@@ -1,23 +1,35 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block header %}
-<div>Quiz</div>
+<h1>Quiz Home</h1>
 {% endblock header%}
 
 {% block content %}
 <div>
-    <a href="{% url 'app:Index' %}">Home</a>
-    <a href="{% url 'app:QuizCreate' %}">Create Quiz</a>
-    <a href="{% url 'app:QuizList' %}">Test Quiz</a>
-</div>
+    <h2>Quizzes</h2>
+    <div class="quizzes-card-div">
+        {% for quiz in quizzes %}
+        <div class="card quiz-card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ quiz.title}}</a></h5>
+                <!--<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>-->
+                <p class="card-text">
+                    Questions : {{ quiz.questions.count }}<br>
+                    Tests : {{ quiz.quiz_test_results.count }}
+                </p>
+                <a href="{% url 'app:QuizDetail' quiz_id=quiz.id %}" class="card-link">Detail</a>
+            </div>
+            <div class="card-footer text-muted">
+                <small>{{ quiz.modified|naturaltime }}</small>
+            </div>
 
-<div>
-    {% for quiz in quizzes %}
-    <a href="{% url 'app:QuizDetail' quiz_id=quiz.id %}">{{ forloop.counter }} {{ quiz.title}}</a>
-    <a href="{% url 'app:QuizUpdate' quiz_id=quiz.id %}">Edit</a>
-    <a href="{% url 'app:quiz_delete' quiz_id=quiz.id %}">Delete</a>
-    <br/>
-    {% endfor %}
+        </div>
+        <br/>
+        {% empty %}
+        No quizzes
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}

@@ -1,24 +1,36 @@
 {% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
+
 
 {% block header %}
-<div>Quiz Create</div>
+<h1>{{ quiz.title }}</h1>
 {% endblock header%}
 
 {% block content %}
+<div class="alert alert-info" role="alert">
+    The time will start immediately after the page has loaded. You will receive total of 1 minutes..
+</div>
+
 <div>
-    <form method="POST">
+    <form method="POST" id="test_form">
         {% csrf_token %}
-        {{ quiz.title }}<br>
 
         {{ form.as_p }}
 
-<!--        {% for question in quiz.questions.all %}-->
-<!--        {{ question.question }}<br>-->
-<!--        {% for choice in question.question_choices.all %}-->
-<!--        <input type="checkbox" name="{{ question.pk }}" value="{{ choice.pk }}">{{ choice.choice }}<br/>-->
-<!--        {% endfor %}-->
-<!--        {% endfor %}-->
-        <input type="submit" value="Submit">
+        <!--        {% for question in quiz.questions.all %}-->
+        <!--        {{ question.question }}<br>-->
+        <!--        {% for choice in question.question_choices.all %}-->
+        <!--        <input type="checkbox" name="{{ question.pk }}" value="{{ choice.pk }}">{{ choice.choice }}<br/>-->
+        <!--        {% endfor %}-->
+        <!--        {% endfor %}-->
+
+        <input type="submit" value="Submit" class="btn btn-primary btn-sm">
     </form>
 </div>
+
+<script>
+    // window.setInterval(function () {
+    //     document.getElementById("test_form").submit().delay(1000);
+    // }, 300);
+</script>
 {% endblock content %}

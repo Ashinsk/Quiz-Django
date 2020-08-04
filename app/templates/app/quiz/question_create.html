@@ -1,17 +1,25 @@
 {% extends 'app/base.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
 {% block header %}
-<div>Question Create</div>
+<div>
+    <h1>{{ title }}</h1>
+</div>
 {% endblock header%}
 
 {% block content %}
-<h1>{{ title }}</h1>
+<h2>Add Question</h2>
+
+<div class="alert alert-info" role="alert">
+    Check the checkbox if correct answer.
+</div>
 
 <div>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
+        {{ form|crispy }}
+        <input type="submit" value="Submit" class="btn btn-primary btn-sm submit-btn ">
     </form>
 </div>
 {% endblock content %}
