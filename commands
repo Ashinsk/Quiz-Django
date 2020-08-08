@@ -1,0 +1,30 @@
+sudo docker-compose run web
+sudo docker-compose run build
+sudo docker-compose up # To run server
+
+# List dockers
+sudo docker ps
+sudo docker ps --all
+sudo docker ps - a -q
+
+# Removing dockers
+sudo docker system prune
+sudo docker system --volumes
+
+# Removing specific
+sudo docker container ls -a
+sudo docker container rm cc3f2ff51cab cd20b396a061
+sudo docker container prune # For all
+
+sudo docker image ls
+sudo docker image prune
+
+sudo docker volume ls
+sudo docker volume prune
+
+sudo docker network ls
+sudo docker network prune
+
+# Stop and remove all containers
+docker container stop $(docker container ls -aq)
+docker container rm $(docker container ls -aq)
