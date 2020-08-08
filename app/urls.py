@@ -20,4 +20,6 @@ urlpatterns = [
     path('anonymous/user/form/', views.AnonymousUserForm.as_view(), name='AnonymousUserForm'),
 
     path('result/list/', views.QuizResultList.as_view(), name='QuizResultList'),
+    path('<int:quiz_id>/result/list/', views.QuizTestResultList.as_view(), name='QuizTestResultList'),
+
 ]

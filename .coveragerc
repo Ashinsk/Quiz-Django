@@ -1,0 +1,9 @@
+[coverage:run]
+source = .
+
+omit=
+    .venv/*
+    manage.py
+    */migrations/*
+    */tests/*
+    */tests.py

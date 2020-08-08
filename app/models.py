@@ -19,7 +19,7 @@ class Question(models.Model):
     """
     Questions for the quizzes.
     """
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions',related_query_name='question')
     question = models.CharField(max_length=1024)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

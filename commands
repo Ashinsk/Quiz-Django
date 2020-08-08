@@ -1,0 +1,5 @@
+coverage run manage.py test
+coverage run manage.py test app -v 2
+coverage html
+coverage report
+coverage report -m

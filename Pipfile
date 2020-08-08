@@ -13,10 +13,14 @@ django-sass-processor = "*"
 django-crispy-forms = "*"
 django-widget-tweaks = "*"
 django-extensions = "*"
+coverage = "*"
+python-decouple = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 server = "python manage.py runserver"
+dev = "python manage.py runserver --settings=quiz.settings.dev"
 shell_plus = "python manage.py shell_plus"

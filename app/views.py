@@ -77,6 +77,9 @@ class QuizList(ListView):
     model = Quiz
     context_object_name = 'quizzes'
 
+    def get_queryset(self):
+        return Quiz.objects.filter(question__isnull=False)
+
 
 def quiz_delete(request, quiz_id):
     """
@@ -242,6 +245,22 @@ class QuizResultList(LoginRequiredMixin,ListView):
     template_name = 'app/quiz/quiz_result_list.html'
     model = QuizTestResult
     context_object_name = 'results'
+    paginate_by = 12
 
     def get_queryset(self):
         return QuizTestResult.objects.filter(user=self.request.user)
+
+
+class QuizTestResultList(LoginRequiredMixin,ListView):
+    template_name = 'app/quiz/quiz_test_result_list.html'
+    model = QuizTestResult
+    context_object_name = 'results'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return QuizTestResult.objects.filter(quiz=self.kwargs.get('quiz_id'),quiz__author=self.request.user).order_by('-created')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data()
+        context['quiz'] = Quiz.objects.get(pk=self.kwargs.get('quiz_id'))
+        return context

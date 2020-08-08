@@ -4,6 +4,11 @@
 {% block header %}
 <div>
     <h1>{{ quiz.title }}</h1>
+    <small class="text text-muted">{{ quiz.created }}</small>
+    <p>
+        Number of questions : {{ quiz.questions.count}}<br/>
+        Total Tests : {{ quiz.quiz_test_results.count }} <a href="{% url 'app:QuizTestResultList' quiz_id=quiz.pk %}">View Results</a>
+    </p>
     {% if request.user.is_authenticated and request.user == quiz.author %}
     <div>
         <a href="{% url 'app:QuestionCreate' quiz_id=quiz.pk %}" class="btn btn-primary btn-sm">Add Question</a>

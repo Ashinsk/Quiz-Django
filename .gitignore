@@ -146,6 +146,16 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Not to ignore .env file for references purposes for development
+!.env
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 
