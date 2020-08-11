@@ -10,3 +10,9 @@ Create your own quizzes and take quiz tests.
 * View test results with correct answers.
 * Receive results of test in emails.
 * Download list of users scores.
+* Display flash messages.
+
+## Configurations
+
+* Configured docker file.
+* Separated production and development settings.
