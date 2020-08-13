@@ -16,3 +16,4 @@ Create your own quizzes and take quiz tests.
 
 * Configured docker file.
 * Separated production and development settings.
+* Configured logging.
