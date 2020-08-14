@@ -1,0 +1,3 @@
+Username,Email,Score,Date
+{% for result in results %}
+"{{ result.user.username|addslashes }}","{{ result.user.email|addslashes }}","{{ result.score }}","{% with date=result.created|date:"d M, Y" %}{{ date|addslashes }}{% endwith %}"{% endfor %}

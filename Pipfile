@@ -16,11 +16,17 @@ django-extensions = "*"
 coverage = "*"
 python-decouple = "*"
 django-debug-toolbar = "*"
+xhtml2pdf = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+mixer = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 server = "python manage.py runserver"
-dev = "python manage.py runserver --settings=quiz.settings.dev"
 shell_plus = "python manage.py shell_plus"
+
+dev = "python manage.py runserver --settings=quiz.settings.dev"
+dev_shell_plus  = "python manage.py shell_plus --settings=quiz.settings.dev"

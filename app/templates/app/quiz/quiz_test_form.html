@@ -3,7 +3,9 @@
 
 
 {% block header %}
-<h1>{{ quiz.title }}</h1>
+<h1>
+    {{ quiz.title|capfirst }}
+</h1>
 {% endblock header%}
 
 {% block content %}

@@ -3,7 +3,9 @@
 {% load static %}
 
 {% block header %}
-<h1>{{ quiz.title|capfirst }}</h1>
+<h1>
+    {{ quiz.title|capfirst }}
+</h1>
 {% endblock header%}
 
 {% block content %}
@@ -12,8 +14,15 @@
         Here are the results of other users who have attended your quiz test.
     </p>
 
-    <table class="table">
-        <caption>List of results</caption>
+    <div class="mb-2">
+        <label>Download</label>
+        <a href="{% url 'app:quiz_result_export' quiz_id=quiz.id filetype='csv' %}" class="btn btn-primary btn-sm">CSV</a>
+        <a href="{% url 'app:quiz_result_export' quiz_id=quiz.id filetype='xlsx' %}" class="btn btn-primary btn-sm">Excel</a>
+        <a href="{% url 'app:quiz_result_export' quiz_id=quiz.id filetype='pdf' %}" class="btn btn-primary btn-sm">PDF</a>
+        <a href="{% url 'app:quiz_result_export' quiz_id=quiz.id filetype='docx' %}" class="btn btn-primary btn-sm">Docx</a>
+    </div>
+
+    <table id="result_list_table" class="table">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -25,11 +34,13 @@
         <tbody>
         {% for result in results %}
         <tr>
-            <th scope="row">{{ forloop.counter }}</th>
+            <td scope="row">{{ forloop.counter }}</td>
             <td>{{ result.user.username }}</td>
             <td>{{ result.score }}</td>
             <td>{{ result.created|date:"d M, Y" }}</td>
         </tr>
+        {% empty %}
+        <tr class="text-center"><td colspan="4">Empty</td></tr>
         {% endfor %}
         </tbody>
     </table>
@@ -52,4 +63,9 @@
     </span>
     </div>
 </div>
+<script>
+    // $(document).ready(function () {
+    //     $('#result_list_table').DataTable();
+    // });
+</script>
 {% endblock content %}

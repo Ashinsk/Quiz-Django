@@ -2,14 +2,33 @@
 {% load widget_tweaks %}
 
 {% block header %}
+    <h1>{{ quiz.title|capfirst }}</h1>
+{% endblock header%}
+
+{% block content %}
 <div>
-    <h1>{{ quiz.title }}</h1>
     <small class="text text-muted">{{ quiz.created }}</small>
     <p>
         Number of questions : {{ quiz.questions.count}}<br/>
-        Total Tests : {{ quiz.quiz_test_results.count }} <a href="{% url 'app:QuizTestResultList' quiz_id=quiz.pk %}">View Results</a>
+        Total Tests : {{ quiz.quiz_test_results.count }}
+        {% if request.user.is_authenticated and request.user == quiz.author %}
+        <a href="{% url 'app:UserAuthorQuizTestResultList' quiz_id=quiz.pk %}">View Results</a>
+        {% endif %}
     </p>
-    {% if request.user.is_authenticated and request.user == quiz.author %}
+    {% if request.user.is_authenticated and request.user == quiz.author and not quiz.is_published %}
+    {% if not quiz.is_published %}
+    <div class="alert alert-warning" role="alert">
+        Your quiz has not yet been published. Please make sure everythings OK before publishing.
+        You won't be able to change once published.<br><br>
+        Click
+        <a href="{% url 'app:quiz_publish' quiz_id=quiz.id %}" class="btn btn-warning btn-sm">Publish</a>
+        to publish your quiz.
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+        Your quiz has been published.
+    </div>
+    {% endif %}
     <div>
         <a href="{% url 'app:QuestionCreate' quiz_id=quiz.pk %}" class="btn btn-primary btn-sm">Add Question</a>
         <a href="{% url 'app:QuizUpdate' quiz_id=quiz.id %}" class="btn btn-primary btn-sm">Edit</a>
@@ -17,16 +36,13 @@
     </div>
     {% endif %}
 </div>
-{% endblock header%}
-
-{% block content %}
 <div>
     {% for question in object.questions.all %}
     <div class="card question-card-div">
         <div class="card-body">
             <div class="card-title question-card-title-div">
-                <h5 class="question">{{ question.question }}</h5>
-                {% if request.user.is_authenticated and request.user == quiz.author %}
+                <h5 class="question">{{ question.question|capfirst }}</h5>
+                {% if request.user.is_authenticated and request.user == quiz.author and not quiz.is_published %}
                 <div>
                     <a href="{% url 'app:QuestionUpdate' quiz_id=quiz.pk question_id=question.pk%}" class="btn btn-primary btn-sm">Edit</a>
                     <a href="{% url 'app:question_delete' quiz_id=quiz.pk question_id=question.pk%}" class="btn btn-danger btn-sm">Delete</a>
@@ -37,15 +53,19 @@
             {% for choice in question.question_choices.all %}
             <p class="card-text">
                 {% if choice.is_correct %}
-                <span class="is_correct">{{ forloop.counter }}) {{ choice.choice }}</span>
+                <span class="is_correct">{{ forloop.counter }}) {{ choice.choice|capfirst }}</span>
                 {% else %}
-                {{ forloop.counter }}) {{ choice.choice }}
+                {{ forloop.counter }}) {{ choice.choice|capfirst }}
                 {% endif %}
             </p>
             {% endfor %}
 
         </div>
     </div>
+    {% empty %}
+    <p>
+        No questions yet.
+    </p>
     {% endfor %}
 </div>
 {% endblock content %}

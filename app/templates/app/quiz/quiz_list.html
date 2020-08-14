@@ -12,10 +12,11 @@
         {% for quiz in quizzes %}
         <div class="card quiz-card" style="width: 18rem;">
             <div class="card-body">
-                <h5 class="card-title">{{ quiz.title}}</a></h5>
+                <h5 class="card-title">{{ quiz.title|capfirst }}</a></h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{ quiz.author.username }}</h6>
                 <p class="card-text">
-                    Questions : {{ quiz.questions.count }}
+                    Questions : {{ quiz.questions.count }}<br/>
+                    Tests : {{ quiz.quiz_test_results.count }}
                 </p>
                 {% if quiz.questions.count > 0 %}
                 <a href="{% url 'app:QuizTest' quiz_id=quiz.id %}" class="btn btn-primary btn-sm">Take Test</a>
@@ -28,7 +29,9 @@
         </div>
         <br/>
         {% empty %}
-        No quizzes
+        <p>
+            No quizzes published yet.
+        </p>
         {% endfor %}
     </div>
 </div>

@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from decouple import config
+import logging
+
+logger = logging.getLogger('django')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -23,8 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = False
 
 # Application definition
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'widget_tweaks',
     'django_extensions',
+    'debug_toolbar',
 
     'app',
     'auth_app',
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'quiz.urls'
@@ -75,7 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'quiz.wsgi.application'
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -94,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -108,7 +110,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
@@ -120,8 +121,58 @@ STATICFILES_FINDERS = [
     'sass_processor.finders.CssFinder',
 ]
 
-SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR,'static')
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
 
+LOGIN_REDIRECT_URL = 'app:Index'
+LOGOUT_REDIRECT_URL = 'app:Index'
 
-LOGIN_REDIRECT_URL ='app:Index'
-LOGOUT_REDIRECT_URL ='app:Index'
+DJANGO_LOG_LEVEL = 'WARNING'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} :: Module {module} :: Line no : {lineno} :: {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + '/debug.log',
+            'formatter': 'verbose'
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': DJANGO_LOG_LEVEL,
+        'filters': ['require_debug_true'],
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': DJANGO_LOG_LEVEL,
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': DJANGO_LOG_LEVEL,
+            'propagate': True,
+        },
+    },
+}

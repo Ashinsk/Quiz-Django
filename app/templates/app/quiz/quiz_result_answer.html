@@ -1,0 +1,48 @@
+{% extends 'app/base.html' %}
+{% load widget_tweaks %}
+
+{% block header %}
+<h1>{{ result.quiz.title|capfirst }}</h1>
+{% endblock header%}
+
+{% block content %}
+<div>
+    <small class="text text-muted">{{ result.created }}</small>
+    <p>
+        Number of questions : {{ result.quiz.questions.count}}<br/>
+        Score : {{ result.score }}
+    </p>
+</div>
+<div>
+    {% for question in result.quiz.questions.all %}
+    <div class="card question-card-div">
+        <div class="card-body">
+            <div class="card-title question-card-title-div">
+                <h5 class="question">{{ question.question|capfirst }}</h5>
+            </div>
+            {% for choice in question.question_choices.all %}
+            <span class="card-text">
+                {% if choice.is_correct %}
+                <span class="is_correct">{{ forloop.counter }}) {{ choice.choice|capfirst }}</span>
+                {% else %}
+                {{ forloop.counter }}) {{ choice.choice|capfirst }}
+                {% endif %}
+                {% for answer in answers %}
+                {% if answer.question == question %}
+                {% if choice == answer.choice %}
+                <span class="text-info">(Selected)</span>
+                {% endif%}
+                {% endif%}
+                {% endfor %}
+            </p>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% empty %}
+    <p>
+        No questions yet.
+    </p>
+    {% endfor %}
+</div>
+{% endblock content %}

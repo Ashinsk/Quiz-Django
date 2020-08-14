@@ -16,11 +16,13 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from app import views as app_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', include('auth_app.urls')),
+    path('', app_views.Index.as_view()),
     path('quiz/', include('app.urls'))
 ]
 
@@ -28,4 +30,5 @@ if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
+        path('admin/doc/', include('django.contrib.admindocs.urls')),
     ] + urlpatterns

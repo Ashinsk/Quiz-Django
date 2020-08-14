@@ -3,9 +3,7 @@
 {% load widget_tweaks %}
 
 {% block header %}
-<div>
-    <h1>{{ title }}</h1>
-</div>
+<h1>{{ title|capfirst }}</h1>
 {% endblock header%}
 
 {% block content %}

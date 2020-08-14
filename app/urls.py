@@ -6,9 +6,11 @@ urlpatterns = [
     path('', views.Index.as_view(), name='Index'),
 
     path('list/', views.QuizList.as_view(), name='QuizList'),
+    path('list/user/', views.UserAuthorQuizList.as_view(), name='UserAuthorQuizList'),
     path('create/', views.QuizCreate.as_view(), name='QuizCreate'),
     path('<int:quiz_id>/update/', views.QuizUpdate.as_view(), name='QuizUpdate'),
     path('<int:quiz_id>/detail/', views.QuizDetail.as_view(), name='QuizDetail'),
+    path('<int:quiz_id>/publish/', views.quiz_publish, name='quiz_publish'),
     path('<int:quiz_id>/delete/', views.quiz_delete, name='quiz_delete'),
 
     path('<int:quiz_id>/question/create/', views.QuestionCreate.as_view(), name='QuestionCreate'),
@@ -20,6 +22,8 @@ urlpatterns = [
     path('anonymous/user/form/', views.AnonymousUserForm.as_view(), name='AnonymousUserForm'),
 
     path('result/list/', views.QuizResultList.as_view(), name='QuizResultList'),
-    path('<int:quiz_id>/result/list/', views.QuizTestResultList.as_view(), name='QuizTestResultList'),
+    path('<int:quiz_id>/result/export/<str:filetype>/', views.quiz_result_export, name='quiz_result_export'),
+    path('<int:quiz_id>/result/list/', views.UserAuthorQuizTestResultList.as_view(), name='UserAuthorQuizTestResultList'),
 
+    path('<int:result_id>/result/answer/', views.QuizResultAnswer.as_view(), name='QuizResultAnswer'),
 ]

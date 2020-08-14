@@ -12,14 +12,17 @@
             <li class="nav-item {% if request.resolver_match.url_name == 'QuizCreate' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'app:QuizCreate' %}">Create Quiz</a>
             </li>
-            <li class="nav-item {% if request.resolver_match.url_name == 'QuizList' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'app:QuizList' %}">Quiz Test</a>
-            </li>
             {% if request.user.is_authenticated %}
+            <li class="nav-item {% if request.resolver_match.url_name == 'UserAuthorQuizList' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'app:UserAuthorQuizList' %}">My Quiz</a>
+            </li>
             <li class="nav-item {% if request.resolver_match.url_name == 'QuizResultList' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'app:QuizResultList' %}">Results</a>
             </li>
             {% endif %}
+            <li class="nav-item {% if request.resolver_match.url_name == 'QuizList' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'app:QuizList' %}">Quiz Test</a>
+            </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if request.user.is_authenticated %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from app.models import Question, QuestionChoice, Quiz, QuizTestResult
+from app.models import Question, QuestionChoice, Quiz, QuizTestResult, QuizTestResultAnswer
 
 
 class QuizForm(forms.ModelForm):
@@ -11,7 +11,7 @@ class QuizForm(forms.ModelForm):
 
     class Meta:
         model = Quiz
-        fields = "__all__"
+        exclude = ('is_published',)
 
 
 class QuestionForm(forms.Form):
@@ -108,14 +108,20 @@ class QuizTestForm(forms.Form):
         answers = dict()
         for question in questions:
             selected_choice = data.get(str(question.pk))
-            correct_choices = QuestionChoice.get_correct_choices(quiz.pk)
+            correct_choices = QuestionChoice.get_correct_choices(question.pk)
             a = (set(selected_choice)).difference(set(correct_choices))
             if not a or not correct_choices:
                 score += 1
             answers[question] = {'correct': correct_choices, 'selected': selected_choice}
         return answers, score
 
+    def save_answers(self,result,answers):
+        for question, answer in answers.items():
+            for ans in answer['selected']:
+                QuizTestResultAnswer.objects.create(quiz_test=result,question=question,choice=ans)
+
     def save(self,quiz_id,user,**kwargs):
         answers, score = self.check_correct_answers(quiz_id)
         q = QuizTestResult.objects.create(user=user,quiz_id=quiz_id,score=score)
+        self.save_answers(q,answers)
         return q
