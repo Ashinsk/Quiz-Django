@@ -419,6 +419,9 @@ def quiz_result_export(request, quiz_id, filetype):
 
 
 class QuizResultAnswer(LoginRequiredMixin, TemplateView):
+    """
+    View quiz result answers.
+    """
     template_name = 'app/quiz/quiz_result_answer.html'
 
     def get_context_data(self, **kwargs):
