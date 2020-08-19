@@ -11,6 +11,7 @@ Create your own quizzes and take quiz tests.
 * Receive results of test in emails.
 * Download list of users scores.
 * Display flash messages.
+* Custom 404 page for proper user experience.
 
 ## Configurations
 

@@ -8,6 +8,11 @@
 
 {% block content %}
 <div>
+    {% if quizzes|length == 0 %}
+    <div class="alert alert-info col-12" role="alert">
+        No quizzes published yet.
+    </div>
+    {% endif %}
     <div class="mb-2">
         <a class="btn btn-primary btn-sm" href="{% url 'app:QuizCreate' %}">Add Quiz</a>
     </div>
@@ -21,26 +26,22 @@
                     Questions : {{ quiz.questions.count }}<br/>
                     Tests : {{ quiz.quiz_test_results.count }}
                 </p>
-                 {% if quiz.is_published %}
+                {% if quiz.is_published %}
                 <button class="btn btn-sm btn-success">Published</button>
                 {% else %}
                 <button class="btn btn-sm btn-warning">Not Published</button>
                 {% endif %}
-                <a href="{% url 'app:QuizDetail' quiz_id=quiz.id %}" class="card-link">Detail</a>
+                <a href="{% url 'app:QuizDetail' quiz_id=quiz.id %}" class="card-link btn btn-primary btn-sm">Detail</a>
             </div>
             <div class="card-footer text-muted">
                 <small>{{ quiz.modified|naturaltime }}</small>
             </div>
-
         </div>
         <br/>
-        {% empty %}
-        <p>
-            No quizzes published yet.
-        </p>
         {% endfor %}
     </div>
 
+    {% if quizzes > 0%}
     <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
@@ -58,5 +59,6 @@
         {% endif %}
     </span>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}

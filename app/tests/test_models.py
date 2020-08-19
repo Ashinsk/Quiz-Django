@@ -1,23 +1,23 @@
-import unittest
 from django.test import TestCase
 from app.models import *
 
 
 def create_user():
-    user = User.objects.create(username='test')
-    user.set_password('test')
-    user.save()
+    user = User.objects.create_user(username='test',password='test')
     return user
 
 
 class QuizTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         self.user = create_user()
         self.quiz = Quiz.objects.create(author=self.user, title='Test')
 
     def test_create_quiz(self):
         self.assertTrue(isinstance(self.quiz, Quiz), 'Should be of instance Quiz')
         self.assertEqual(self.quiz.title, 'Test', 'Should have same title name')
+        self.assertTrue(self.quiz.created)
+        self.assertTrue(self.quiz.modified)
 
     def test_get_quiz_by_created(self):
         # Testing for next and previous quiz of first quiz by created.
@@ -46,7 +46,8 @@ class QuizTest(TestCase):
 
 
 class QuestionTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         self.user = create_user()
         self.quiz = Quiz.objects.create(author=self.user, title='Test')
         self.question = Question.objects.create(quiz=self.quiz, question='Question1')
@@ -62,7 +63,8 @@ class QuestionTest(TestCase):
 
 
 class QuestionChoiceTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         self.user = create_user()
         self.quiz = Quiz.objects.create(author=self.user, title='Test')
         self.question = Question.objects.create(quiz=self.quiz, question='Question1')
@@ -84,7 +86,8 @@ class QuestionChoiceTest(TestCase):
 
 
 class QuestionTestResultTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         self.user = create_user()
         self.quiz = Quiz.objects.create(author=self.user, title='Test')
         self.question = Question.objects.create(quiz=self.quiz, question='Question1')
@@ -94,8 +97,9 @@ class QuestionTestResultTest(TestCase):
         self.assertEqual(result.score, 1, 'Should have count 1')
 
 
-class QuestionTestResulAnswertTest(TestCase):
-    def setUp(self):
+class QuestionTestResultAnswerTest(TestCase):
+    @classmethod
+    def setUpTestData(self):
         self.user = create_user()
         self.quiz = Quiz.objects.create(author=self.user, title='Test')
         self.question = Question.objects.create(quiz=self.quiz, question='Question1')
@@ -107,3 +111,4 @@ class QuestionTestResulAnswertTest(TestCase):
 
     def test_quiz_test_result_answer(self):
         answer = QuizTestResultAnswer.objects.create(quiz_test=self.result, question=self.question, choice=self.choice1)
+        self.assertEqual(answer.choice, self.choice1)

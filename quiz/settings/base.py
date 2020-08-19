@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from decouple import config
 import logging
+import sys
 
 logger = logging.getLogger('django')
 
@@ -128,6 +129,10 @@ LOGOUT_REDIRECT_URL = 'app:Index'
 
 DJANGO_LOG_LEVEL = 'WARNING'
 
+LOG_FILE = 'debug.log'
+if 'test' in sys.argv:
+    LOG_FILE = 'test.debug.log'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -154,7 +159,7 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR + '/debug.log',
+            'filename': BASE_DIR + '/' + LOG_FILE,
             'formatter': 'verbose'
         },
     },

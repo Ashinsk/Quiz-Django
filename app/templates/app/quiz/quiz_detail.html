@@ -2,20 +2,21 @@
 {% load widget_tweaks %}
 
 {% block header %}
-    <h1>{{ quiz.title|capfirst }}</h1>
+<h1>{{ quiz.title|capfirst }}</h1>
+<span><small class="text text-muted">{{ quiz.created }}</small></span>
 {% endblock header%}
 
 {% block content %}
 <div>
-    <small class="text text-muted">{{ quiz.created }}</small>
-    <p>
-        Number of questions : {{ quiz.questions.count}}<br/>
-        Total Tests : {{ quiz.quiz_test_results.count }}
-        {% if request.user.is_authenticated and request.user == quiz.author %}
-        <a href="{% url 'app:UserAuthorQuizTestResultList' quiz_id=quiz.pk %}">View Results</a>
-        {% endif %}
-    </p>
-    {% if request.user.is_authenticated and request.user == quiz.author and not quiz.is_published %}
+    {% if request.user.is_authenticated and request.user == quiz.author %}
+    {% if not quiz.is_published %}
+    <div>
+        <a href="{% url 'app:QuizUpdate' quiz_id=quiz.id %}" class="btn btn-primary btn-sm">Edit</a>
+        <a href="{% url 'app:quiz_delete' quiz_id=quiz.id %}" class="btn btn-danger btn-sm">Delete</a>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% if request.user.is_authenticated and request.user == quiz.author %}
     {% if not quiz.is_published %}
     <div class="alert alert-warning" role="alert">
         Your quiz has not yet been published. Please make sure everythings OK before publishing.
@@ -26,17 +27,36 @@
     </div>
     {% else %}
     <div class="alert alert-success" role="alert">
-        Your quiz has been published.
+        Your quiz has been published.<br/>Published on : {{ quiz.published_date }}
     </div>
     {% endif %}
-    <div>
-        <a href="{% url 'app:QuestionCreate' quiz_id=quiz.pk %}" class="btn btn-primary btn-sm">Add Question</a>
-        <a href="{% url 'app:QuizUpdate' quiz_id=quiz.id %}" class="btn btn-primary btn-sm">Edit</a>
-        <a href="{% url 'app:quiz_delete' quiz_id=quiz.id %}" class="btn btn-danger btn-sm">Delete</a>
-    </div>
     {% endif %}
+    <p>
+        Number of questions : {{ quiz.questions.count}}<br/>
+        Total Tests : {{ quiz.quiz_test_results.count }}
+    </p>
+    <div class="mb-3">
+        {% if request.user.is_authenticated and request.user == quiz.author %}
+        <a href="{% url 'app:UserAuthorQuizTestResultList' quiz_id=quiz.pk %}" class="btn btn-sm btn-primary">View Results</a>
+        {% if request.user.is_authenticated and request.user == quiz.author and not quiz.is_published %}
+        <a href="{% url 'app:quiz_publish' quiz_id=quiz.id %}" class="btn btn-warning btn-sm">Publish</a>
+        {% else %}
+        <button class="btn btn-success btn-sm">Published</button>
+        {% endif %}
+        {% endif %}
+    </div>
 </div>
 <div>
+    {% if request.user.is_authenticated and request.user == quiz.author and not quiz.is_published %}
+    <div class="mb-2">
+        <a href="{% url 'app:QuestionCreate' quiz_id=quiz.pk %}" class="btn btn-primary btn-sm">Add Question</a>
+    </div>
+    {% if object.questions.all|length == 0 %}
+    <div class="alert alert-info" role="alert">
+        No questions yet.
+    </div>
+    {% endif %}
+    {% endif %}
     {% for question in object.questions.all %}
     <div class="card question-card-div">
         <div class="card-body">
@@ -62,10 +82,6 @@
 
         </div>
     </div>
-    {% empty %}
-    <p>
-        No questions yet.
-    </p>
     {% endfor %}
 </div>
 {% endblock content %}

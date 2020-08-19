@@ -14,7 +14,7 @@
 </div>
 
 <div>
-    <form method="POST" id="test_form">
+    <form method="POST" id="test_form" name="test_form">
         {% csrf_token %}
 
         {{ form.as_p }}
@@ -34,5 +34,14 @@
     // window.setInterval(function () {
     //     document.getElementById("test_form").submit().delay(1000);
     // }, 300);
+
+    // function submitform() {
+    //     document.getElementById("test_form").submit();
+    // }
+
+    // setInterval(function () {
+    //     submitform();
+    // }, 500);
+
 </script>
 {% endblock content %}

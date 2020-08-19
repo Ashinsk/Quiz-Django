@@ -32,3 +32,5 @@ if settings.DEBUG:
         path('__debug__/', include(debug_toolbar.urls)),
         path('admin/doc/', include('django.contrib.admindocs.urls')),
     ] + urlpatterns
+
+handler404 = 'app.views.response_404_handler'

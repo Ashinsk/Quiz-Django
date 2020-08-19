@@ -1,9 +1,11 @@
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
@@ -12,6 +14,10 @@ from django.views.generic import TemplateView, CreateView, FormView, DetailView,
 from app.export import Export
 from app.forms import *
 from quiz.settings.base import logger
+
+
+def response_404_handler(request, exception=None):
+    return render(request, "app/errors/404.html", status=404)
 
 
 class Index(TemplateView):
@@ -45,7 +51,7 @@ class QuizCreate(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url(quiz_id=form.pk))
 
     def form_invalid(self, form):
-        print(form.errors)
+        # print(form.errors)
         logger.error(form.errors)
         messages.add_message(self.request, messages.ERROR, form.errors)
         return super().form_invalid(form)
@@ -57,7 +63,7 @@ class QuizUpdate(LoginRequiredMixin, UpdateView):
     """
     template_name = 'app/quiz/quiz_create.html'
     model = Quiz
-    fields = '__all__'
+    form_class = QuizForm
     pk_url_kwarg = 'quiz_id'
 
     def get_success_url(self):
@@ -87,7 +93,7 @@ class QuizList(ListView):
     context_object_name = 'quizzes'
 
     def get_queryset(self):
-        return Quiz.objects.filter(question__isnull=False,is_published=True).order_by('-created')
+        return Quiz.objects.filter(question__isnull=False, is_published=True).order_by('-created')
 
 
 class UserAuthorQuizList(LoginRequiredMixin, ListView):
@@ -112,7 +118,7 @@ def quiz_publish(request, quiz_id):
     :param quiz_id: PK value of the quiz.
     :return: Redirect to quiz detail.
     """
-    quiz = get_object_or_404(Quiz, pk=quiz_id)
+    quiz = get_object_or_404(Quiz, pk=quiz_id, author=request.user)
     if quiz.questions.count() > 0:
         quiz.is_published = True
         quiz.save()
@@ -120,7 +126,7 @@ def quiz_publish(request, quiz_id):
     else:
         messages.add_message(request, messages.SUCCESS, 'Please add questions to publish.')
 
-    return HttpResponseRedirect(reverse_lazy('app:QuizDetail', kwargs={'quiz_id':quiz_id}))
+    return HttpResponseRedirect(reverse_lazy('app:QuizDetail', kwargs={'quiz_id': quiz_id}))
 
 
 @login_required
@@ -132,7 +138,7 @@ def quiz_delete(request, quiz_id):
     :param quiz_id: PK value of the quiz.
     :return: Redirect to index view.
     """
-    quiz = get_object_or_404(Quiz, pk=quiz_id)
+    quiz = get_object_or_404(Quiz, pk=quiz_id, author=request.user)
     quiz.delete()
     return HttpResponseRedirect(reverse_lazy('app:UserAuthorQuizList'))
 
@@ -149,7 +155,7 @@ class QuestionCreate(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = Quiz.objects.get(pk=self.kwargs.get('quiz_id'))
+        context['quiz'] = Quiz.objects.get(pk=self.kwargs.get('quiz_id'))
         return context
 
     def get_form(self, form_class=None):
@@ -163,7 +169,7 @@ class QuestionCreate(LoginRequiredMixin, FormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
-        print(form.errors)
+        # print(form.errors)
         logger.error(form.errors)
         messages.add_message(self.request, messages.ERROR, 'Question Add Error')
         return super().form_invalid(form)
@@ -181,7 +187,7 @@ class QuestionUpdate(LoginRequiredMixin, FormView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['title'] = Quiz.objects.get(pk=self.kwargs.get('quiz_id'))
+        context['quiz'] = Quiz.objects.get(pk=self.kwargs.get('quiz_id'))
         return context
 
     def get_form(self, form_class=None):
@@ -195,12 +201,11 @@ class QuestionUpdate(LoginRequiredMixin, FormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
-        print(form.errors)
+        # print(form.errors)
         logger.error(form.errors)
         messages.add_message(self.request, messages.ERROR, 'Question Update Error')
-        return HttpResponseRedirect(reverse_lazy('app:QuestionUpdate', kwargs={'quiz_id': self.kwargs.get('quiz_id'),
-                                                                               'question_id': self.kwargs.get(
-                                                                                   'question_id')}))
+        return super().form_invalid(form)
+
 
 @login_required
 def question_delete(request, quiz_id, question_id):
@@ -235,6 +240,10 @@ class AnonymousUserForm(FormView):
         quiz_id = self.request.GET.get('quiz_id')
         data = form.cleaned_data
         return HttpResponseRedirect(self.get_success_url(quiz_id=quiz_id, name=data['name'], email=data['email']))
+
+    def form_invalid(self, form):
+        logger.error(form.errors)
+        return super().form_invalid(form)
 
 
 class QuizTest(UserPassesTestMixin, FormView):
@@ -285,6 +294,10 @@ class QuizTest(UserPassesTestMixin, FormView):
                           recipient_list=[self.request.user.email])
         messages.add_message(self.request, messages.SUCCESS, 'Thank you for your participation.')
         return HttpResponseRedirect(reverse_lazy('app:QuizResultList'))
+
+    def form_invalid(self, form):
+        print(form.errors)
+        return super().form_invalid(form)
 
 
 class QuizResultList(LoginRequiredMixin, ListView):
@@ -411,7 +424,7 @@ class QuizResultAnswer(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         result_id = self.kwargs.get('result_id')
-        quiz_test_result = get_object_or_404(QuizTestResult,pk=result_id)
+        quiz_test_result = get_object_or_404(QuizTestResult, pk=result_id)
         context['result'] = quiz_test_result
         context['answers'] = QuizTestResultAnswer.objects.filter(quiz_test=quiz_test_result)
         return context

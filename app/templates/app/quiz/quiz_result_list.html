@@ -8,9 +8,15 @@
 
 {% block content %}
 <div>
-    <p>
+    {% if results|length == 0 %}
+    <div class="alert alert-info col-12" role="alert">
+        No quizzes published yet.
+    </div>
+    {% else %}
+    <div class="alert alert-info col-12" role="alert">
         Here are the results of your quiz test.
-    </p>
+    </div>
+    {% endif %}
     <div class="quizzes-card-div">
         {% for result in results %}
         <div class="card quiz-card" style="width: 18rem;">
@@ -20,19 +26,17 @@
                 <p class="card-text">
                     Score : {{ result.score }} / {{ result.quiz.questions.count }}<br>
                 </p>
-                <a href="{% url 'app:QuizResultAnswer' result_id=result.id %}" class="card-link">View Result</a>
+                <a href="{% url 'app:QuizResultAnswer' result_id=result.id %}" class="card-link btn btn-primary btn-sm">View Result</a>
             </div>
             <div class="card-footer text-muted">
                 <small>{{ result.created|naturaltime }}</small>
             </div>
         </div>
         <br/>
-        {% empty %}
-        <p>
-            No quizzes published yet.
-        </p>
         {% endfor %}
     </div>
+
+    {% if results|length > 0 %}
     <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
@@ -50,5 +54,6 @@
         {% endif %}
     </span>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}

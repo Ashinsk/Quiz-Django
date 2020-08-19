@@ -20,6 +20,7 @@ xhtml2pdf = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 mixer = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
@@ -27,6 +28,5 @@ python_version = "3.8"
 [scripts]
 server = "python manage.py runserver"
 shell_plus = "python manage.py shell_plus"
-
 dev = "python manage.py runserver --settings=quiz.settings.dev"
 dev_shell_plus  = "python manage.py shell_plus --settings=quiz.settings.dev"
