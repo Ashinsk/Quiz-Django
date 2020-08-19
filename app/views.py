@@ -427,4 +427,5 @@ class QuizResultAnswer(LoginRequiredMixin, TemplateView):
         quiz_test_result = get_object_or_404(QuizTestResult, pk=result_id)
         context['result'] = quiz_test_result
         context['answers'] = QuizTestResultAnswer.objects.filter(quiz_test=quiz_test_result)
+        print('Testing quiz result answer')
         return context
