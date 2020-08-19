@@ -431,4 +431,5 @@ class QuizResultAnswer(LoginRequiredMixin, TemplateView):
         context['result'] = quiz_test_result
         context['answers'] = QuizTestResultAnswer.objects.filter(quiz_test=quiz_test_result)
         print('Testing')
+        print('Abcd')
         return context
