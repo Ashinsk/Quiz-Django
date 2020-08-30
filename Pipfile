@@ -21,6 +21,8 @@ sphinx = "*"
 sphinx-rtd-theme = "*"
 mixer = "*"
 gunicorn = "*"
+transactions = "*"
+django-admin-tools = "*"
 
 [requires]
 python_version = "3.8"

@@ -44,6 +44,19 @@ class QuizTest(TestCase):
         self.assertRaises(Quiz.DoesNotExist, quiz_2.get_previous_by_modified)
         self.assertRaises(Quiz.DoesNotExist, self.quiz.get_next_by_modified)
 
+    def test_quiz_publish(self):
+        self.quiz.publish_quiz()
+        self.quiz.refresh_from_db()
+        self.assertTrue(self.quiz.is_published)
+        self.assertTrue(self.quiz.published_date != None)
+
+    def test_quiz_unpublish(self):
+        # Testing for next and previous quiz of first quiz by modified.
+        quiz_2 = Quiz.objects.create(author=self.user, title='Test2',is_published=True)
+        quiz_2.unpublish_quiz()
+        quiz_2.refresh_from_db()
+        self.assertFalse(quiz_2.is_published)
+
 
 class QuestionTest(TestCase):
     @classmethod
@@ -85,7 +98,7 @@ class QuestionChoiceTest(TestCase):
         self.assertEqual(choices.count(), 0,'Should have no correct choice with count 0')
 
 
-class QuestionTestResultTest(TestCase):
+class QuizTestResultTest(TestCase):
     @classmethod
     def setUpTestData(self):
         self.user = create_user()
@@ -112,3 +125,12 @@ class QuestionTestResultAnswerTest(TestCase):
     def test_quiz_test_result_answer(self):
         answer = QuizTestResultAnswer.objects.create(quiz_test=self.result, question=self.question, choice=self.choice1)
         self.assertEqual(answer.choice, self.choice1)
+
+    def test_quiz_test_result_reevaluate_not_exist(self):
+        self.assertRaises(ObjectDoesNotExist,self.result.reevaluate_scores)
+
+    def test_quiz_test_result_reevaluate_not_exist(self):
+        answer = QuizTestResultAnswer.objects.create(quiz_test=self.result, question=self.question, choice=self.choice1)
+        self.assertEqual(answer.choice, self.choice1)
+        score = self.result.reevaluate_scores()
+        self.assertEqual(score,1)

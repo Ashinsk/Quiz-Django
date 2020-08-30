@@ -5,7 +5,34 @@ from app.models import *
 
 
 class QuizAdmin(ModelAdmin):
-    list_display = ('title', 'created', 'modified')
+    list_display = ('title', 'author', 'is_published', 'get_total_test_counts', 'created', 'modified')
+    search_fields = ('title',)
+    list_filter = ('is_published','author',)
+    actions = ['publish_quiz','unpublish_quiz']
+    ordering = ('-modified',)
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = {'title': 'Quiz'}
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def get_total_test_counts(self, obj):
+        return obj.quiz_test_results.count()
+    get_total_test_counts.short_description = 'Tests'
+
+    def publish_quiz(self, request, queryset):
+        for q in queryset:
+            q.publish_quiz()
+
+        self.message_user(request,f'{queryset.count()} quizzes published.')
+
+    publish_quiz.short_description = "Publish selected quiz."
+
+    def unpublish_quiz(self, request, queryset):
+        for q in queryset:
+            q.unpublish_quiz()
+
+        self.message_user(request,f'{queryset.count()} quizzes unpublished.')
+    unpublish_quiz.short_description = "Unpublish selected quiz."
 
 
 class QuestionAdmin(ModelAdmin):

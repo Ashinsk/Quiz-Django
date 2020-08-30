@@ -1,5 +1,8 @@
+import random
+
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from app.models import Question, QuestionChoice, Quiz, QuizTestResult, QuizTestResultAnswer
 
@@ -11,7 +14,7 @@ class QuizForm(forms.ModelForm):
 
     class Meta:
         model = Quiz
-        exclude = ('is_published',)
+        exclude = ('is_published','published_date')
 
 
 class QuestionForm(forms.Form):
@@ -59,6 +62,7 @@ class QuestionForm(forms.Form):
             raise ValidationError('Please select a correct choice.')
         return self.cleaned_data
 
+    @transaction.atomic
     def save(self, quiz_id, question_id=None, **kwargs):
         data = self.cleaned_data
         question, created = Question.objects.update_or_create(pk=question_id, defaults={'quiz_id': data['quiz'], 'question': data['question']})
@@ -94,7 +98,8 @@ class QuizTestForm(forms.Form):
         super().__init__(**kwargs)
 
         quiz = Quiz.objects.get(pk=quiz_id)
-        questions = quiz.questions.all()
+        questions = list(quiz.questions.all())
+        random.shuffle(questions)
         for question in questions:
             self.fields[str(question.pk)] = QuestionChoiceModelChoiceField(queryset=question.question_choices.all(), widget=forms.CheckboxSelectMultiple())
             self.fields[str(question.pk)].label = question.question
@@ -115,11 +120,13 @@ class QuizTestForm(forms.Form):
             answers[question] = {'correct': correct_choices, 'selected': selected_choice}
         return answers, score
 
+    @transaction.atomic
     def save_answers(self,result,answers):
         for question, answer in answers.items():
             for ans in answer['selected']:
                 QuizTestResultAnswer.objects.create(quiz_test=result,question=question,choice=ans)
 
+    @transaction.atomic
     def save(self,quiz_id,user,**kwargs):
         answers, score = self.check_correct_answers(quiz_id)
         q = QuizTestResult.objects.create(user=user,quiz_id=quiz_id,score=score)

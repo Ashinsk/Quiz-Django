@@ -93,7 +93,7 @@ class QuizList(ListView):
     context_object_name = 'quizzes'
 
     def get_queryset(self):
-        return Quiz.objects.filter(question__isnull=False, is_published=True).order_by('-created')
+        return Quiz.objects.distinct().filter(question__isnull=False, is_published=True).order_by('-created')
 
 
 class UserAuthorQuizList(LoginRequiredMixin, ListView):
@@ -120,8 +120,7 @@ def quiz_publish(request, quiz_id):
     """
     quiz = get_object_or_404(Quiz, pk=quiz_id, author=request.user)
     if quiz.questions.count() > 0:
-        quiz.is_published = True
-        quiz.save()
+        quiz.publish_quiz()
         messages.add_message(request, messages.SUCCESS, 'Published successfully.')
     else:
         messages.add_message(request, messages.SUCCESS, 'Please add questions to publish.')

@@ -19,3 +19,9 @@ AUTH_PASSWORD_VALIDATORS = []
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
+
+# Override log level
+DJANGO_LOG_LEVEL = 'INFO'
+LOGGING['root']['level'] = DJANGO_LOG_LEVEL
+LOGGING['loggers']['django']['level'] = DJANGO_LOG_LEVEL
+LOGGING['loggers']['django.request']['level'] = DJANGO_LOG_LEVEL
