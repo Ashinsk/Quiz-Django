@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
+from simple_history.admin import SimpleHistoryAdmin
 
 from app.models import *
 
 
-class QuizAdmin(ModelAdmin):
+class QuizAdmin(SimpleHistoryAdmin):
     list_display = ('title', 'author', 'is_published', 'get_total_test_counts', 'created', 'modified')
     search_fields = ('title',)
     list_filter = ('is_published','author',)
@@ -35,7 +36,7 @@ class QuizAdmin(ModelAdmin):
     unpublish_quiz.short_description = "Unpublish selected quiz."
 
 
-class QuestionAdmin(ModelAdmin):
+class QuestionAdmin(SimpleHistoryAdmin):
     list_display = ('question', 'created', 'modified')
 
 
@@ -51,3 +52,4 @@ admin.site.register(Quiz, QuizAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(QuestionChoice, QuestionChoiceAdmin)
 admin.site.register(QuizTestResult, QuizTestResultAdmin)
+admin.site.register(QuizTestResultAnswer)

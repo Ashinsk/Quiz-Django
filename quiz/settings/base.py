@@ -32,11 +32,6 @@ DEBUG = False
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_tools',
-    # 'admin_tools.theming',
-    'admin_tools.menu',
-    # 'admin_tools.dashboard',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +47,8 @@ INSTALLED_APPS = [
 
     'app',
     'auth_app',
+
+    'simple_history',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +59,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'quiz.urls'
@@ -71,19 +70,15 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'admin_custom/templates')],
-        # 'APP_DIRS': True,
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
-            'loaders': [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-                'admin_tools.template_loaders.Loader',
-            ],
+                'admin_custom.context_processors.app_list',
+            ]
         },
     },
 ]
@@ -194,5 +189,3 @@ LOGGING = {
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-ADMIN_TOOLS_MENU = 'admin_custom.menu.CustomMenu'

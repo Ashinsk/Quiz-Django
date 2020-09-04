@@ -19,7 +19,6 @@ from django.urls import path, include
 from app import views as app_views
 
 urlpatterns = [
-    path('admin_tools/', include('admin_tools.urls')),
     path('admin/', admin.site.urls),
 
     path('', include('auth_app.urls')),
@@ -38,4 +37,6 @@ handler404 = 'app.views.response_404_handler'
 
 admin.site.site_header = 'Quiz Django'
 admin.site.site_title = 'Quiz Django'
-admin.site.enable_nav_sidebar = False
+
+# To remove nav side bar in admin panel
+# admin.site.enable_nav_sidebar = False

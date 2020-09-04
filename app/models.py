@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 from quiz.settings.base import logger
+from simple_history.models import HistoricalRecords
 
 class Quiz(models.Model):
     """
@@ -14,6 +15,7 @@ class Quiz(models.Model):
     published_date = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     def publish_quiz(self):
         self.is_published = True
@@ -40,6 +42,7 @@ class Question(models.Model):
     question = models.CharField(max_length=1024)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     def get_previous_question(self):
         try:
