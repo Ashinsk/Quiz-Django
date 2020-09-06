@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
-from quiz.settings.base import logger
 from simple_history.models import HistoricalRecords
 
 class Quiz(models.Model):

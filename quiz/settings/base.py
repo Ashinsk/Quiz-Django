@@ -39,16 +39,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+
     'sass_processor',
     'crispy_forms',
     'widget_tweaks',
     'django_extensions',
     'debug_toolbar',
+    'simple_history',
 
     'app',
     'auth_app',
 
-    'simple_history',
 ]
 
 MIDDLEWARE = [
